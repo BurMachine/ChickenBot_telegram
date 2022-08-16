@@ -1,0 +1,30 @@
+stages:
+  — build
+  — deploy
+build:
+  image: golang:latest 
+  stage: build
+  script:
+    — go get ./...
+    — GOARCH=amd64 GOOS=linux go build -ldflags "-extldflags '-static'" -o $CI_PROJECT_DIR/binary
+  artifacts:
+    paths:
+      — binary
+
+deploy_stage:
+  image: kroniak/ssh-client
+  stage: deploy
+  environment:
+    name: stage
+    url: http://stage.s21tgbot.ru
+  when: manual
+  script:
+    — mkdir -p ~/.ssh
+    — echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    — chmod -R 700 ~/.ssh
+    — echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+    — chmod 644 ~/.ssh/known_hosts
+    — echo "$CONFIG" > ./config.json
+    — scp -P$SSH_PORT -r ./config.json $SSH_USER@$SSH_HOST:/var/www/project/config/
+    — scp -P$SSH_PORT -r ./binary $SSH_USER@$SSH_HOST:~/binary_tmp
+    — ssh -p$SSH_PORT $SSH_USER@$SSH_HOST 'sudo service project stop && cp ~/binary_tmp /var/www/project/binary && sudo service project restart'
