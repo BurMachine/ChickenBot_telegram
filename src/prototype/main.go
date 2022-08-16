@@ -6,11 +6,11 @@ import (
 )
 
 func main() {
-	bot, err := tgbotapi.NewBotAPI("5775513785:AAGy6Ht6IYgaZUVfLOmyyYiviwtJfJhmKu8") // подключаемся к боту с помощью токена
+	bot, err := tgbotapi.NewBotAPI(TELEGRAM_BOT_API_KEY) // подключаемся к боту с помощью токена
 	if err != nil {
 		log.Panic(err)
 	}
-	bot.Debug = true
+	//bot.Debug = true
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
 	var ucfg tgbotapi.UpdateConfig = tgbotapi.NewUpdate(0) // инициализируем канал, куда будут прилетать обновления от API
@@ -20,7 +20,7 @@ func main() {
 	for update := range updates { // читаем обновления из канала
 		if update.Message != nil {
 			log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
-			if !ParseCommand(update.Message.Text, update, bot) {
+			if ParseCommand(update.Message.Text, update, bot) == 0 {
 				msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
 				msg.ReplyToMessageID = update.Message.MessageID
 				bot.Send(msg)
