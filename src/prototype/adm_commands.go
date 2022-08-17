@@ -24,7 +24,7 @@ func regUser(id tgbotapi.Update, bot *tgbotapi.BotAPI) {
 	NovosibirskButton := tgbotapi.NewKeyboardButton("Новосибирск")
 	requestContactReplyKeyboard := tgbotapi.NewReplyKeyboard([]tgbotapi.KeyboardButton{KazanButton, MoscowButton, NovosibirskButton})
 	requestContactMessage.ReplyMarkup = requestContactReplyKeyboard
-	str := requestContactMessage.Text
-	
+	//str := requestContactMessage.Text
+
 	return
 }
