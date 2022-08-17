@@ -22,3 +22,8 @@ func botReg(us *user, update tgbotapi.Update, bot *tgbotapi.BotAPI, msg tgbotapi
 		delete(signMap, update.Message.From.ID)
 	}
 }
+
+func stringCheck(us *user, update tgbotapi.Update) (a bool) {
+	name :=  
+	return
+}

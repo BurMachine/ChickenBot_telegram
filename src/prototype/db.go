@@ -3,13 +3,6 @@ package main
 import (
 	"database/sql"
 	"fmt"
-)
-
-package main
-
-import (
-	"database/sql"
-	"fmt"
 	_ "github.com/lib/pq"
 )
 
@@ -27,7 +20,7 @@ var password = "test"
 var dbname = "postgres"
 var sslmode = "disable"
 
-var dbInfo = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s", host, port, user, password, dbname, sslmode)
+var dbInfo = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s", host, port, user_db, password, dbname, sslmode)
 
 //Collecting data from bot
 
@@ -84,4 +77,3 @@ func createTableChats() error {
 
 	return nil
 }
-

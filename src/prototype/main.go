@@ -21,6 +21,12 @@ func main() {
 	updates, err := bot.GetUpdatesChan(u)
 
 	// Loop through each update.
+	createTableEvents()
+	createTableChats()
+	if err = createTableUsers(); err != nil {
+		log.Print("DB ERROR")
+		return
+	}
 	for update := range updates {
 		var msg tgbotapi.MessageConfig
 		if update.Message != nil {
@@ -43,6 +49,7 @@ func main() {
 					us, ok := signMap[update.Message.From.ID]
 					if ok {
 						botReg(us, update, bot, msg)
+
 						log.Print(us)
 					} else {
 						msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Я вас не понял..")
