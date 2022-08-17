@@ -6,3 +6,5 @@ services:
     image: postgres
     environment:
       POSTGRES_PASSWORD: test
+    ports:
+      - "5432:5432"
