@@ -77,3 +77,56 @@ func createTableChats() error {
 
 	return nil
 }
+
+//Add record in users table
+func addUser(us *user) error {
+	//Connecting to database
+	db, err := sql.Open("postgres", dbInfo)
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
+	if _, err = db.Exec("INSERT INTO users (login, username, role, campus) values($1, $2, $3, $4)", us.login, us.name, 0, us.campus); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Add new event in DB
+func addEvent(event *events) error {
+	//Connecting to database
+	db, err := sql.Open("postgres", dbInfo)
+	if err != nil {
+		return err
+	}
+	defer db.Close()
+
+	if _, err = db.Exec("INSERT INTO event(TYPE, DESCRIPTION, UNIQUE_CODE, START_TIME, EXPIRIES_TIME) values('$1','$2','$3','$4','$5')"); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+//Check user in DB
+func checkUserExist(name string) (int, error) {
+
+	var count int
+	//Connecting to database
+	db, err := sql.Open("postgres", dbInfo)
+	if err != nil {
+		return 0, err
+	}
+	defer db.Close()
+
+	//Counting number of users
+	row := db.QueryRow("SELECT * FROM users WHERE username = '$1'")
+	err = row.Scan(&count)
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}

@@ -27,6 +27,14 @@ type user struct {
 	role   int
 }
 
+type events struct {
+	eType       string
+	description string
+	uniqueCode  string
+	startTime   string //проверить типб в БД timestamp
+	expiresTime string //проверить типб в БД timestamp
+}
+
 var signMap map[int]*user
 
 var StartMenuKeyboard = tgbotapi.NewReplyKeyboard(

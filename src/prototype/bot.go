@@ -30,6 +30,7 @@ func botReg(us *user, update tgbotapi.Update, bot *tgbotapi.BotAPI, msg tgbotapi
 			msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Некорректный город")
 			bot.Send(msg)
 		} else {
+			// addUser(us)
 			msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Окей, запомнил!")
 			msg.ReplyMarkup = tgbotapi.NewRemoveKeyboard(true)
 			bot.Send(msg)
