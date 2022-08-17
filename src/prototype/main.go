@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	tgbotapi "github.com/Syfaro/telegram-bot-api"
 	"log"
 )
@@ -21,12 +22,14 @@ func main() {
 	updates, err := bot.GetUpdatesChan(u)
 
 	// Loop through each update.
-	createTableEvents()
-	createTableChats()
-	if err = createTableUsers(); err != nil {
-		log.Print("DB ERROR")
-		return
-	}
+	//createTableEvents()
+	//createTableChats()
+	//if err = createTableUsers(); err != nil {
+	//	log.Print("DB ERROR")
+	//	return
+	//}
+	db, err := sql.Open("postgres", dbInfo)
+
 	for update := range updates {
 		var msg tgbotapi.MessageConfig
 		if update.Message != nil {
