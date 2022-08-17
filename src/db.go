@@ -70,8 +70,8 @@ func createTableChats() error {
 	}
 	defer db.Close()
 
-	//Creating users Table
-	if _, err = db.Exec(`CREATE TABLE events(ID SERIAL PRIMARY KEY, CHAT_ID BIGINT);`); err != nil {
+	//Creating chats Table
+	if _, err = db.Exec(`CREATE TABLE chats(ID SERIAL PRIMARY KEY, CHAT_ID BIGINT);`); err != nil {
 		return err
 	}
 
