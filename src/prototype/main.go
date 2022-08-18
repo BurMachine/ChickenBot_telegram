@@ -26,6 +26,7 @@ func main() {
 	m = make(map[int64]int)
 	signMap = make(map[int64]*user)
 	i := 0 // флаг регистрации(4 если все ок)
+	regFlag := 0
 	for update := range updates {
 		var msg tgbotapi.MessageConfig
 		if update.Message != nil {
@@ -49,29 +50,16 @@ func main() {
 						msg.ReplyMarkup = CheckinMenuKeyboard
 					}
 					bot.Send(msg)
-				} else if cmdText == "gorod" {
+				} else if cmdText == "create" {
 					flag = 2
-					msg = tgbotapi.NewMessage(update.Message.Chat.ID, "fbawiuyfgaoisugfawiug")
-					msg.ReplyMarkup = CampusMenuKeyboard
+					msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Создани е ивента:")
 					bot.Send(msg)
 				}
 			} else {
 				if flag == 1 {
 					registration(update, bot, &i, msg, db, &flag)
 				} else if flag == 2 {
-					if update.Message.Text == CampusMenuKeyboard.Keyboard[0][0].Text {
-						msg = tgbotapi.NewMessage(update.Message.Chat.ID, "1")
-						bot.Send(msg)
-					} else if update.Message.Text == CampusMenuKeyboard.Keyboard[0][1].Text {
-						msg = tgbotapi.NewMessage(update.Message.Chat.ID, "2")
-						bot.Send(msg)
-					} else if update.Message.Text == CampusMenuKeyboard.Keyboard[0][2].Text {
-						msg = tgbotapi.NewMessage(update.Message.Chat.ID, "3")
-						bot.Send(msg)
-					} else {
-						msg = tgbotapi.NewMessage(update.Message.Chat.ID, "123")
-						bot.Send(msg)
-					}
+
 				} else {
 					msg = tgbotapi.NewMessage(update.Message.Chat.ID, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
 					bot.Send(msg)
