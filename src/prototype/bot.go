@@ -1,11 +1,12 @@
 package main
 
 import (
+	"database/sql"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"log"
 )
 
-func botReg(us *user, update tgbotapi.Update, bot *tgbotapi.BotAPI, msg tgbotapi.MessageConfig, i *int) {
+func botReg(us *user, update tgbotapi.Update, bot *tgbotapi.BotAPI, msg tgbotapi.MessageConfig, i *int, db *sql.DB) {
 	log.Print("!!!", *i)
 	if us.state == 0 && *i == 1 {
 		log.Print("!!!")
@@ -41,6 +42,8 @@ func botReg(us *user, update tgbotapi.Update, bot *tgbotapi.BotAPI, msg tgbotapi
 			msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Окей, запомнил!")
 			msg.ReplyMarkup = tgbotapi.NewRemoveKeyboard(true)
 			bot.Send(msg)
+			// check user exists
+			addUser(us, db)
 			delete(signMap, update.Message.From.ID)
 			*i++
 		}

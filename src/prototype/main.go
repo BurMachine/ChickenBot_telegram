@@ -12,7 +12,7 @@ func main() {
 	if err != nil {
 		log.Panic(err)
 	}
-
+	db := openDatabase()
 	//bot.Debug = true
 
 	log.Printf("Authorized on account %s", bot.Self.UserName)
@@ -62,7 +62,7 @@ func main() {
 						us, ok := signMap[update.Message.From.ID]
 						log.Print(flag)
 						if ok {
-							botReg(us, update, bot, msg, &i)
+							botReg(us, update, bot, msg, &i, db)
 							log.Print(us, flag)
 						} else {
 							msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Я вас не понял..(мб зареган)")
