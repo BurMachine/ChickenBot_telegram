@@ -27,7 +27,19 @@ type user struct {
 	role   int
 }
 
+<<<<<<< HEAD
 var signMap map[int64]*user
+=======
+type events struct {
+	eType       string
+	description string
+	uniqueCode  string
+	startTime   string //проверить типб в БД timestamp
+	expiresTime string //проверить типб в БД timestamp
+}
+
+var signMap map[int]*user
+>>>>>>> b34a0062c56fdf46a9bca8eed437124886333504
 
 var StartMenuKeyboard = tgbotapi.NewReplyKeyboard(
 	tgbotapi.NewKeyboardButtonRow(
