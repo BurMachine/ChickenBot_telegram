@@ -54,21 +54,27 @@ func addUser(us *user, db *sql.DB) error {
 }
 
 // Add new event in DB
-//func addEvent(event *events, db *sql.DB) error {
-//	_, err = db.Exec("INSERT INTO event(TYPE, DESCRIPTION, UNIQUE_CODE, START_TIME, EXPIRIES_TIME) values('$1','$2','$3','$4','$5')")
-//	if err != nil {
-//        log.Panic(err)
-//	return nil
-//}
-//
-////Check user in DB
-//func checkUserExist(name string, db *sql.DB) (int, error) {
-//	//Counting number of users
-//	row := db.QueryRow("SELECT * FROM users WHERE username = '$1'")
-//	err = row.Scan(&count)
-//	if err != nil {
-//		return 0, err
-//	}
-//
-//	return count, nil
-//}
+func addEvent(event *events, db *sql.DB) error {
+	if _, err = db.Exec("INSERT INTO event(TYPE, DESCRIPTION, UNIQUE_CODE, START_TIME, EXPIRIES_TIME) values('$1','$2','$3','$4','$5')",
+		event.eType,
+		event.description,
+		event.uniqueCode,
+		event.startTime,
+		event.expiresTime); err != nil {
+		return err
+	}
+	return nil
+}
+
+//Check user in DB
+func checkUserExist(login string, db *sql.DB) (int, error) {
+	//Counting number of users
+	var count = 0
+	row := db.QueryRow("SELECT * FROM users WHERE username = '$1'", login)
+	err := row.Scan(&count)
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}
