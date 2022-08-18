@@ -26,11 +26,11 @@ func main() {
 	m = make(map[int64]int)
 	signMap = make(map[int64]*user)
 	i := 0 // флаг регистрации(4 если все ок)
-	regFlag := 0
+	//createFlag := 0
 	for update := range updates {
 		var msg tgbotapi.MessageConfig
 		if update.Message != nil {
-			_, ok := m[update.Message.Chat.ID]
+			//_, ok := m[update.Message.Chat.ID]
 
 			if update.Message.IsCommand() {
 				cmdText := update.Message.Command()
@@ -39,32 +39,51 @@ func main() {
 				} else if cmdText == "start" {
 					if a, _ := checkUserChatExist(update.Message.Chat.ID, db); !a {
 						flag = 1
-						if !ok || i < 4 {
-							msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Main menu")
-							msg.ReplyMarkup = StartMenuKeyboard
-						} else {
-							msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Что-то на случай наличия регистрации")
-						}
+						msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Main menu")
+						msg.ReplyMarkup = StartMenuKeyboard
 					} else {
 						msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Вы зареганы")
-						msg.ReplyMarkup = CheckinMenuKeyboard
+						msg.ReplyMarkup = tgbotapi.NewRemoveKeyboard(true)
+						//bot.Send(msg)
+						msg.ReplyMarkup = inKeyboard
 					}
 					bot.Send(msg)
-				} else if cmdText == "create" {
-					flag = 2
-					msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Создани е ивента:")
-					bot.Send(msg)
+				} else if cmdText == "create_event_command-for-tgcommand-line" {
+
 				}
 			} else {
 				if flag == 1 {
 					registration(update, bot, &i, msg, db, &flag)
 				} else if flag == 2 {
 
+					//if createFlag == 0 {
+					//	createFlag++
+					//} else if createFlag == 1 {
+					//	createFlag++
+					//} else if createFlag == 2 {
+					//	createFlag++
+					//}
 				} else {
 					msg = tgbotapi.NewMessage(update.Message.Chat.ID, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
 					bot.Send(msg)
 				}
 			}
+		} else if update.CallbackQuery != nil {
+			callback := tgbotapi.NewCallback(update.CallbackQuery.ID, update.CallbackQuery.Data)
+			if _, err := bot.Request(callback); err != nil {
+				panic(err)
+			}
+			if update.CallbackQuery.Data == "create_event" {
+				msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Создание ивента")
+				flag = 2
+			} else if update.CallbackQuery.Data == "see_all_events" {
+				msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Просмотр ивентов")
+				flag = 3
+			} else if update.CallbackQuery.Data == "Chiken-box" {
+				msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Чикен Чикен🐣")
+				flag = 4
+			}
+			bot.Send(msg)
 		}
 	}
 }

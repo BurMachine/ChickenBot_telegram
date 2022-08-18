@@ -5,7 +5,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-func botReg(us *user, update tgbotapi.Update, bot *tgbotapi.BotAPI, msg tgbotapi.MessageConfig, i *int, db *sql.DB) {
+func botReg(us *user, update tgbotapi.Update, bot *tgbotapi.BotAPI, msg tgbotapi.MessageConfig, i *int, db *sql.DB, flag *int) {
 	if us.state == 0 && *i == 1 {
 		us.name = update.Message.Text
 		if !check_name(us.name) {
@@ -45,6 +45,14 @@ func botReg(us *user, update tgbotapi.Update, bot *tgbotapi.BotAPI, msg tgbotapi
 			addUser(us, db)
 			delete(signMap, update.Message.From.ID)
 			*i = 0
+			*flag = 0
 		}
 	}
+}
+
+func botCreation(cr *events, update tgbotapi.Update, bot *tgbotapi.BotAPI, msg tgbotapi.MessageConfig, flag1 *int, db *sql.DB) {
+	if *flag1 == 1 {
+		cr.name = 
+	}
+
 }

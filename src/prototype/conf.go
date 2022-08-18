@@ -9,6 +9,17 @@ const (
 	POSTGRESS_COLLECTION_USERS = "users"                                          // Название таблицы
 )
 
+var ArrEmojiText []string = []string{"💣", "📸", "📟", "✈", "🚀",
+	"🛸", "🍾", "☕", "🍕", "🥑",
+	"🦖", "🦉", "🐣", "🦩", "🦁",
+	"🐈", "🦄", "🐅", "🦣", "☠",
+	"🤬", "😈", "🌠", "🪐", "🔥",
+	"🌈", "🌝", "💎", "🗿", "🦊",
+	"👾", "👻", "💩", "🤡", "🤖",
+	"👽", "🔑", "💰", "📱", "🕶",
+	"🥽", "👑", "🎓", "🎨", "🎮",
+	"🪄", "⚡", "🦝", "☁️", "⭐️"}
+
 type User struct {
 	Chat_ID int64
 }
@@ -29,6 +40,8 @@ type user struct {
 }
 
 type events struct {
+	state       int
+	name        string
 	eType       string
 	description string
 	uniqueCode  string
@@ -37,6 +50,7 @@ type events struct {
 }
 
 var signMap map[int64]*user
+var createMap map[int]*events
 
 var StartMenuKeyboard = tgbotapi.NewReplyKeyboard(
 	tgbotapi.NewKeyboardButtonRow(
@@ -57,5 +71,16 @@ var CheckinMenuKeyboard = tgbotapi.NewReplyKeyboard(
 		tgbotapi.NewKeyboardButton("Создать"),
 		tgbotapi.NewKeyboardButton("Чекин"),
 		tgbotapi.NewKeyboardButton("123"),
+	),
+)
+var inKeyboard = tgbotapi.NewInlineKeyboardMarkup(
+	tgbotapi.NewInlineKeyboardRow(
+		tgbotapi.NewInlineKeyboardButtonData(ArrEmojiText[4]+"Создать ивент"+ArrEmojiText[4], "create_event"),
+	),
+	tgbotapi.NewInlineKeyboardRow(
+		tgbotapi.NewInlineKeyboardButtonData(ArrEmojiText[8]+"Просмотр всех ивентов"+ArrEmojiText[8], "see_all_events"),
+	),
+	tgbotapi.NewInlineKeyboardRow(
+		tgbotapi.NewInlineKeyboardButtonData(ArrEmojiText[12]+"Чикен"+ArrEmojiText[12], "Chiken-box"),
 	),
 )
