@@ -10,8 +10,8 @@ format:
     - linux
 
   script:
-    - cd src/prototype
-    - go get github.com/go-telegram-bot-api/telegram-bot-api/v5
+    - cd src
+    - go fmt $(go list ./... | grep -v /vendor/)
     - go get github.com/Syfaro/telegram-bot-api
     - go get github.com/lib/pq
     - go fmt *.go
