@@ -32,8 +32,9 @@ func main() {
 
 			if update.Message.IsCommand() {
 				cmdText := update.Message.Command()
-				if cmdText == "start" {
-				} else if cmdText == "menu" {
+				// check
+				if cmdText == "menu" {
+				} else if cmdText == "start" {
 					flag = 1
 					if !ok || i < 4 {
 						msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Main menu")
@@ -50,29 +51,7 @@ func main() {
 				}
 			} else {
 				if flag == 1 {
-					if update.Message.Text == StartMenuKeyboard.Keyboard[0][0].Text && i == 0 {
-						i++
-						signMap[update.Message.From.ID] = new(user)
-						signMap[update.Message.From.ID].state = 0
-						log.Println(update.Message.From.UserName, update.Message.Text)
-						msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Как вас зовут?")
-						bot.Send(msg)
-						log.Print("i=", i)
-					} else {
-						us, ok := signMap[update.Message.From.ID]
-						log.Print(flag)
-						if ok {
-							botReg(us, update, bot, msg, &i, db)
-							log.Print(us, flag)
-						} else {
-							msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Я вас не понял..(мб зареган)")
-							bot.Send(msg)
-						}
-						if i == 4 {
-							//i = 0
-							flag = 0
-						}
-					}
+					registration(update, bot, &i, msg, db, &flag)
 				} else if flag == 2 {
 					if update.Message.Text == CampusMenuKeyboard.Keyboard[0][0].Text {
 						msg = tgbotapi.NewMessage(update.Message.Chat.ID, "1")
