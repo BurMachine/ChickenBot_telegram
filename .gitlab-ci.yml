@@ -25,4 +25,4 @@ compile:
   artifacts:
     paths:
       - tg_bot
-        expire_in: 1 day
+    expire_in: 1 day
