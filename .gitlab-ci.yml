@@ -11,6 +11,7 @@ format:
 
   script:
     - cd src
+    - cd .. && go mod init
     - go fmt $(go list ./prototype | grep -v /vendor/)
     - go get github.com/Syfaro/telegram-bot-api
     - go get github.com/lib/pq
