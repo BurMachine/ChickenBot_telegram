@@ -30,7 +30,7 @@ func botReg(us *user, update tgbotapi.Update, bot *tgbotapi.BotAPI, msg tgbotapi
 			msg.ReplyMarkup = CampusMenuKeyboard
 			bot.Send(msg)
 			us.state = 2
-			*i++
+			*i = 0
 		}
 	} else if us.state == 2 && *i == 3 {
 		us.campus = update.Message.Text

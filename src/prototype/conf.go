@@ -51,3 +51,11 @@ var CampusMenuKeyboard = tgbotapi.NewReplyKeyboard(
 		tgbotapi.NewKeyboardButton("Новосибирск"),
 	),
 )
+
+var CheckinMenuKeyboard = tgbotapi.NewReplyKeyboard(
+	tgbotapi.NewKeyboardButtonRow(
+		tgbotapi.NewKeyboardButton("Создать"),
+		tgbotapi.NewKeyboardButton("Чекин"),
+		tgbotapi.NewKeyboardButton("123"),
+	),
+)

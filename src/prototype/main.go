@@ -14,6 +14,7 @@ func main() {
 	}
 	db := openDatabase()
 	//bot.Debug = true
+	//db, err := sql.Open("postgres", dbInfo)
 
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
@@ -35,12 +36,17 @@ func main() {
 				// check
 				if cmdText == "menu" {
 				} else if cmdText == "start" {
-					flag = 1
-					if !ok || i < 4 {
-						msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Main menu")
-						msg.ReplyMarkup = StartMenuKeyboard
+					if a, _ := checkUserExist(signMap[update.Message.From.ID].login, db); a == 0 {
+						flag = 1
+						if !ok || i < 4 {
+							msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Main menu")
+							msg.ReplyMarkup = StartMenuKeyboard
+						} else {
+							msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Что-то на случай наличия регистрации")
+						}
 					} else {
-						msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Что-то на случай наличия регистрации")
+						msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Вы зареганы")
+						msg.ReplyMarkup = CheckinMenuKeyboard
 					}
 					bot.Send(msg)
 				} else if cmdText == "gorod" {
