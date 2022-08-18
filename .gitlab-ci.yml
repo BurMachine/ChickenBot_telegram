@@ -12,7 +12,7 @@ format:
   script:
     - cd src/prototype
     - cd ../.. && go mod init
-    - go fmt $(go list . | grep -v /vendor/)
+    - go fmt *.go
     - go vet $(go list . | grep -v /vendor/)
     - go test -race $(go list . | grep -v /vendor/)
 
