@@ -85,7 +85,7 @@ func checkUserNameExist(login string, db *sql.DB) (int, error) {
 func checkUserChatExist(chatID int64, db *sql.DB) (bool, error) {
 	//Counting number of users
 	var count int64
-	row := db.QueryRow("SELECT * FROM users WHERE chatid = $1;", chatID)
+	row := db.QueryRow("SELECT COUNT(DISTINCT username) FROM users WHERE chatid = $1;", chatID)
 	err := row.Scan(&count)
 	//if err.s != "" {
 	//	return false, err
