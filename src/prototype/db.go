@@ -33,11 +33,12 @@ func openDatabase() *sql.DB {
 	}
 
 	//Creating users Table
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS users(ID SERIAL PRIMARY KEY, LOGIN TEXT, USERNAME TEXT, ROLE INT, CAMPUS TEXT);`)
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS users(ID SERIAL PRIMARY KEY, chatID INT64, LOGIN TEXT, USERNAME TEXT, ROLE INT, CAMPUS TEXT);`)
 	if err != nil {
 		log.Panic(err)
 	}
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS events(ID SERIAL PRIMARY KEY, TYPE TEXT, DESCRIPTION TEXT, UNIQUE_CODE TEXT, START_TIME TIMESTAMP, EXPIRIES_TIME TIMESTAMP);`)
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS events(ID SERIAL PRIMARY KEY, TYPE TEXT, DESCRIPTION TEXT, "+
+							"UNIQUE_CODE TEXT, START_TIME TIMESTAMP, EXPIRIES_TIME TIMESTAMP);`)
 	if err != nil {
 		log.Panic(err)
 	}
@@ -46,16 +47,16 @@ func openDatabase() *sql.DB {
 
 //Add record in users table
 func addUser(us *user, db *sql.DB) error {
-	if _, err := db.Exec("INSERT INTO users (login, username, role, campus) values($1, $2, $3, $4)", us.login, us.name, 0, us.campus); err != nil {
+	if _, err := db.Exec("INSERT INTO users (chatID, login, username, role, campus) values($1, $2, $3, $4, $5)",
+		us.chatID, us.login, us.name, 0, us.campus); err != nil {
 		return err
 	}
-
 	return nil
 }
 
 // Add new event in DB
 func addEvent(event *events, db *sql.DB) error {
-	if _, err = db.Exec("INSERT INTO event(TYPE, DESCRIPTION, UNIQUE_CODE, START_TIME, EXPIRIES_TIME) values('$1','$2','$3','$4','$5')",
+	if _, err := db.Exec("INSERT INTO event(TYPE, DESCRIPTION, UNIQUE_CODE, START_TIME, EXPIRIES_TIME) values('$1','$2','$3','$4','$5')",
 		event.eType,
 		event.description,
 		event.uniqueCode,

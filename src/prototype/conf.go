@@ -20,6 +20,7 @@ type TelegramBot struct {
 }
 
 type user struct {
+	chatID int64
 	state  int // 0, 1, 2, 3
 	name   string
 	login  string
