@@ -37,7 +37,7 @@ func openDatabase() *sql.DB {
 	if err != nil {
 		log.Panic(err)
 	}
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS events(ID SERIAL PRIMARY KEY, TYPE TEXT, DESCRIPTION TEXT, UNIQUE_CODE TEXT, START_TIME TIMESTAMP, EXPIRIES_TIME TIMESTAMP);`)
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS events(ID SERIAL PRIMARY KEY, eType TEXT, name TEXT, description TEXT, uniqueCode TEXT, startTime TIMESTAMP, expiriesTime TIMESTAMP);`)
 	if err != nil {
 		log.Panic(err)
 	}
@@ -55,8 +55,9 @@ func addUser(us *user, db *sql.DB) error {
 
 // Add new event in DB
 func addEvent(event *events, db *sql.DB) error {
-	if _, err := db.Exec("INSERT INTO event(TYPE, DESCRIPTION, UNIQUE_CODE, START_TIME, EXPIRIES_TIME) values('$1','$2','$3','$4','$5');",
+	if _, err := db.Exec("INSERT INTO event(type, name, description, uniqueCode, startTime, expiriesTime) values('$1','$2','$3','$4','$5', '$6');",
 		event.eType,
+		event.name,
 		event.description,
 		event.uniqueCode,
 		event.startTime,
@@ -67,20 +68,22 @@ func addEvent(event *events, db *sql.DB) error {
 }
 
 //Check user in DB
-func checkUserNameExist(login string, db *sql.DB) (int, error) {
+func checkUserNameExist(login string, db *sql.DB) (bool, error) {
 	//Counting number of users
-	var count = 0
-	row := db.QueryRow("SELECT * FROM users WHERE username = '$1';", login)
+	var count int
+	row := db.QueryRow("SELECT COUNT(DISTINCT username) FROM users WHERE username = '$1';", login)
 	err := row.Scan(&count)
 	if err != nil {
-		return 0, err
+		return false, err
 	}
-
-	return count, nil
+	if count > 0 {
+		return true, nil
+	}
+	return false, nil
 }
 
 /*
-	return false if user exist
+	return true if user exist
 */
 func checkUserChatExist(chatID int64, db *sql.DB) (bool, error) {
 	//Counting number of users
@@ -94,4 +97,14 @@ func checkUserChatExist(chatID int64, db *sql.DB) (bool, error) {
 		return true, nil
 	}
 	return false, nil
+}
+
+func lastEventId(db *sql.DB) (int, error) {
+	var count int
+	row := db.QueryRow("SELECT MAX(id) FROM events;")
+	err := row.Scan(&count)
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
 }
