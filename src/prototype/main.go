@@ -36,7 +36,7 @@ func main() {
 				// check
 				if cmdText == "menu" {
 				} else if cmdText == "start" {
-					if a, _ := checkUserExist(signMap[update.Message.From.ID].login, db); a == 0 {
+					if a, _ := checkUserChatExist(update.Message.Chat.ID, db); !a {
 						flag = 1
 						if !ok || i < 4 {
 							msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Main menu")

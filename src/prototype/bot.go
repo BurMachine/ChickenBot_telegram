@@ -3,19 +3,17 @@ package main
 import (
 	"database/sql"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"log"
 )
 
 func botReg(us *user, update tgbotapi.Update, bot *tgbotapi.BotAPI, msg tgbotapi.MessageConfig, i *int, db *sql.DB) {
-	log.Print("!!!", *i)
 	if us.state == 0 && *i == 1 {
-		log.Print("!!!")
 		us.name = update.Message.Text
 		if !check_name(us.name) {
 			msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Некорректное имя - используйте только буквы")
 			bot.Send(msg)
 		} else {
 			msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Какой у вас логин на платформе?")
+			us.chatID = update.Message.Chat.ID
 			bot.Send(msg)
 			us.state = 1
 			*i++
@@ -30,7 +28,7 @@ func botReg(us *user, update tgbotapi.Update, bot *tgbotapi.BotAPI, msg tgbotapi
 			msg.ReplyMarkup = CampusMenuKeyboard
 			bot.Send(msg)
 			us.state = 2
-			*i = 0
+			*i++
 		}
 	} else if us.state == 2 && *i == 3 {
 		us.campus = update.Message.Text
@@ -45,7 +43,7 @@ func botReg(us *user, update tgbotapi.Update, bot *tgbotapi.BotAPI, msg tgbotapi
 			// check user exists
 			addUser(us, db)
 			delete(signMap, update.Message.From.ID)
-			*i++
+			*i = 0
 		}
 	}
 }
