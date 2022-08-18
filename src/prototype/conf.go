@@ -1,6 +1,6 @@
 package main
 
-import tgbotapi "github.com/Syfaro/telegram-bot-api"
+import tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 
 const (
 	TELEGRAM_BOT_API_KEY       = "5775513785:AAGy6Ht6IYgaZUVfLOmyyYiviwtJfJhmKu8" // API  ключ, который мы получили у BotFather
@@ -27,6 +27,9 @@ type user struct {
 	role   int
 }
 
+<<<<<<< HEAD
+var signMap map[int64]*user
+=======
 type events struct {
 	eType       string
 	description string
@@ -36,6 +39,7 @@ type events struct {
 }
 
 var signMap map[int]*user
+>>>>>>> b34a0062c56fdf46a9bca8eed437124886333504
 
 var StartMenuKeyboard = tgbotapi.NewReplyKeyboard(
 	tgbotapi.NewKeyboardButtonRow(

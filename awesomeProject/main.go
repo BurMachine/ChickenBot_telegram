@@ -6,6 +6,7 @@ import (
 )
 
 var m map[int64]int
+var signMap map[int64]*user
 
 func main() {
 	bot, err := tgbotapi.NewBotAPI("5775513785:AAGy6Ht6IYgaZUVfLOmyyYiviwtJfJhmKu8") // подключаемся к боту с помощью токена
@@ -74,19 +75,7 @@ func main() {
 						}
 					}
 				} else if flag == 2 {
-					if update.Message.Text == CampusMenuKeyboard.Keyboard[0][0].Text {
-						msg = tgbotapi.NewMessage(update.Message.Chat.ID, "1")
-						bot.Send(msg)
-					} else if update.Message.Text == CampusMenuKeyboard.Keyboard[0][1].Text {
-						msg = tgbotapi.NewMessage(update.Message.Chat.ID, "2")
-						bot.Send(msg)
-					} else if update.Message.Text == CampusMenuKeyboard.Keyboard[0][2].Text {
-						msg = tgbotapi.NewMessage(update.Message.Chat.ID, "3")
-						bot.Send(msg)
-					} else {
-						msg = tgbotapi.NewMessage(update.Message.Chat.ID, "123")
-						bot.Send(msg)
-					}
+					if update.Message.Text == StartMenuKeyboard.Keyboard[0][0].Text {
 				} else {
 					msg = tgbotapi.NewMessage(update.Message.Chat.ID, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
 					bot.Send(msg)
@@ -94,4 +83,7 @@ func main() {
 			}
 		}
 	}
+}
+func init() {
+
 }

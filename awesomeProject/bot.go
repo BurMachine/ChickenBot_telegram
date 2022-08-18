@@ -3,6 +3,7 @@ package main
 import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"log"
+	"regexp"
 )
 
 func botReg(us *user, update tgbotapi.Update, bot *tgbotapi.BotAPI, msg tgbotapi.MessageConfig, i *int) {
@@ -37,7 +38,6 @@ func botReg(us *user, update tgbotapi.Update, bot *tgbotapi.BotAPI, msg tgbotapi
 			msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Некорректный город")
 			bot.Send(msg)
 		} else {
-			// addUser(us)
 			msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Окей, запомнил!")
 			msg.ReplyMarkup = tgbotapi.NewRemoveKeyboard(true)
 			bot.Send(msg)
@@ -45,4 +45,14 @@ func botReg(us *user, update tgbotapi.Update, bot *tgbotapi.BotAPI, msg tgbotapi
 			*i++
 		}
 	}
+}
+
+func check_name(name string) bool {
+	matched, _ := regexp.MatchString(`^[a-zA-Zа-яА-Я]+$`, name)
+	return matched
+}
+
+func check_login(name string) bool {
+	matched, _ := regexp.MatchString(`^[a-zA-Z]+$`, name)
+	return matched
 }
