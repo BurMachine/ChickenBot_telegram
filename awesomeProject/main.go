@@ -25,10 +25,11 @@ func main() {
 	flag := 0
 	m = make(map[int64]int)
 	signMap = make(map[int64]*user)
+	i := 0 // флаг регистрации(4 если все ок)
 	for update := range updates {
 		var msg tgbotapi.MessageConfig
 		if update.Message != nil {
-			i, ok := m[update.Message.Chat.ID]
+			_, ok := m[update.Message.Chat.ID]
 
 			if update.Message.IsCommand() {
 				cmdText := update.Message.Command()
@@ -42,7 +43,7 @@ func main() {
 						msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Что-то на случай наличия регистрации")
 					}
 					bot.Send(msg)
-				} else if cmdText == "qwe" {
+				} else if cmdText == "gorod" {
 					flag = 2
 					msg = tgbotapi.NewMessage(update.Message.Chat.ID, "fbawiuyfgaoisugfawiug")
 					msg.ReplyMarkup = CampusMenuKeyboard
@@ -50,7 +51,6 @@ func main() {
 				}
 			} else {
 				if flag == 1 {
-					log.Print(123123123123, flag)
 					if update.Message.Text == StartMenuKeyboard.Keyboard[0][0].Text && i == 0 {
 						i++
 						signMap[update.Message.From.ID] = new(user)
@@ -58,6 +58,7 @@ func main() {
 						log.Println(update.Message.From.UserName, update.Message.Text)
 						msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Как вас зовут?")
 						bot.Send(msg)
+						log.Print("i=", i)
 					} else {
 						us, ok := signMap[update.Message.From.ID]
 						log.Print(flag)
@@ -65,12 +66,16 @@ func main() {
 							botReg(us, update, bot, msg, &i)
 							log.Print(us, flag)
 						} else {
-							msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Я вас не понял..")
+							msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Я вас не понял..(мб зареган)")
 							bot.Send(msg)
+						}
+						if i == 4 {
+							//i = 0
+							flag = 0
 						}
 					}
 				} else if flag == 2 {
-
+					if update.Message.Text == StartMenuKeyboard.Keyboard[0][0].Text {
 				} else {
 					msg = tgbotapi.NewMessage(update.Message.Chat.ID, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
 					bot.Send(msg)
