@@ -46,7 +46,7 @@ func openDatabase() *sql.DB {
 
 //Add record in users table
 func addUser(us *user, db *sql.DB) error {
-	if _, err := db.Exec("INSERT INTO users (chatID, login, username, role, campus) values($1, $2, $3, $4, $5)",
+	if _, err := db.Exec("INSERT INTO users (chatID, login, username, role, campus) values($1, $2, $3, $4, $5);",
 		us.chatID, us.login, us.name, 0, us.campus); err != nil {
 		return err
 	}
@@ -55,7 +55,7 @@ func addUser(us *user, db *sql.DB) error {
 
 // Add new event in DB
 func addEvent(event *events, db *sql.DB) error {
-	if _, err := db.Exec("INSERT INTO event(TYPE, DESCRIPTION, UNIQUE_CODE, START_TIME, EXPIRIES_TIME) values('$1','$2','$3','$4','$5')",
+	if _, err := db.Exec("INSERT INTO event(TYPE, DESCRIPTION, UNIQUE_CODE, START_TIME, EXPIRIES_TIME) values('$1','$2','$3','$4','$5');",
 		event.eType,
 		event.description,
 		event.uniqueCode,
@@ -67,10 +67,21 @@ func addEvent(event *events, db *sql.DB) error {
 }
 
 //Check user in DB
-func checkUserExist(login string, db *sql.DB) (int, error) {
+func checkUserNameExist(login string, db *sql.DB) (int, error) {
 	//Counting number of users
 	var count = 0
-	row := db.QueryRow("SELECT * FROM users WHERE username = '$1'", login)
+	row := db.QueryRow("SELECT * FROM users WHERE username = '$1';", login)
+	err := row.Scan(&count)
+	if err != nil {
+		return 0, err
+	}
+
+	return count, nil
+}
+func checkUserChatExist(chatID int64, db *sql.DB) (int, error) {
+	//Counting number of users
+	var count = 0
+	row := db.QueryRow("SELECT TOP 1 chatid FROM users WHERE chatid = $1;", chatID)
 	err := row.Scan(&count)
 	if err != nil {
 		return 0, err
