@@ -7,7 +7,7 @@ stages:
 format:
   stage: test
   tags:
-    - docker
+    - linux
 
   script:
     - go fmt $(go list ./... | grep -v /vendor/)
@@ -17,7 +17,7 @@ format:
 compile:
   stage: build
   tags:
-    - docker
+    - linux
 
   script:
     - mkdir -p prototype
