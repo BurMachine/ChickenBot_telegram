@@ -22,7 +22,7 @@ var sslmode = "disable"
 
 var dbInfo = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s", host, port, user_db, password, dbname, sslmode)
 
-//Collecting data from bot
+
 
 //Creating users table in database
 func createTableUsers() error {
@@ -35,7 +35,7 @@ func createTableUsers() error {
 	defer db.Close()
 
 	//Creating users Table
-	if _, err = db.Exec(`CREATE TABLE users(ID SERIAL PRIMARY KEY, LOGIN TEXT, USERNAME TEXT, ROLE INT, CAMPUS TEXT);`); err != nil {
+	if _, err = db.Exec(`CREATE TABLE IF NOT EXISTS users(ID SERIAL PRIMARY KEY, LOGIN TEXT, USERNAME TEXT, ROLE INT, CAMPUS TEXT);`); err != nil {
 		return err
 	}
 
@@ -53,7 +53,7 @@ func createTableEvents() error {
 	defer db.Close()
 
 	//Creating users Table
-	if _, err = db.Exec(`CREATE TABLE events(ID SERIAL PRIMARY KEY, TYPE TEXT, DESCRIPTION TEXT, UNIQUE_CODE TEXT, START_TIME TIMESTAMP, EXPIRIES_TIME TIMESTAMP);`); err != nil {
+	if _, err = db.Exec(`CREATE TABLE IF NOT EXISTS events(ID SERIAL PRIMARY KEY, TYPE TEXT, DESCRIPTION TEXT, UNIQUE_CODE TEXT, START_TIME TIMESTAMP, EXPIRIES_TIME TIMESTAMP);`); err != nil {
 		return err
 	}
 
@@ -71,7 +71,7 @@ func createTableChats() error {
 	defer db.Close()
 
 	//Creating chats Table
-	if _, err = db.Exec(`CREATE TABLE chats(ID SERIAL PRIMARY KEY, CHAT_ID BIGINT);`); err != nil {
+	if _, err = db.Exec(`CREATE TABLE IF NOT EXISTS chats(ID SERIAL PRIMARY KEY, CHAT_ID BIGINT);`); err != nil {
 		return err
 	}
 
