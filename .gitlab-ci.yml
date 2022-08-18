@@ -1,0 +1,32 @@
+image: golang:latest  
+
+stages:
+  - test
+  - build
+
+format:
+  stage: test
+  tags:
+    - linux
+
+  script:
+    - cd src
+    - go install github.com/go-telegram-bot-api/telegram-bot-api@v5
+    - go install github.com/Syfaro/telegram-bot-api@latest
+    - go install github.com/lib/pq@latest
+    - go fmt *.go
+    - go vet *.go
+    - go test -race *.go
+
+compile:
+  stage: build
+  tags:
+    - linux
+
+  script:
+    - cd prototype
+    - go build -o tg_bot .
+  artifacts:
+    paths:
+      - tg_bot
+    expire_in: 1 day
