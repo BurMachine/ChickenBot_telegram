@@ -40,7 +40,7 @@ type user struct {
 }
 
 type events struct {
-	state       int
+	state       int // 0, 1, 2, 3
 	eType       string
 	name        string
 	description string
@@ -50,11 +50,17 @@ type events struct {
 }
 
 var signMap map[int64]*user
-var createMap map[int]*events
+var createMap map[int64]*events
 
 var StartMenuKeyboard = tgbotapi.NewReplyKeyboard(
 	tgbotapi.NewKeyboardButtonRow(
 		tgbotapi.NewKeyboardButton("Регистрация"),
+	),
+)
+var YesOrNo = tgbotapi.NewReplyKeyboard(
+	tgbotapi.NewKeyboardButtonRow(
+		tgbotapi.NewKeyboardButton("Да"),
+		tgbotapi.NewKeyboardButton("Нет"),
 	),
 )
 

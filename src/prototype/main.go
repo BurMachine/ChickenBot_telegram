@@ -23,8 +23,10 @@ func main() {
 
 	updates := bot.GetUpdatesChan(u)
 	flag := 0
+	flag1 := 1
 	m = make(map[int64]int)
 	signMap = make(map[int64]*user)
+	createMap = make(map[int64]*events)
 	i := 0 // флаг регистрации(4 если все ок)
 	//createFlag := 0
 	for update := range updates {
@@ -55,7 +57,7 @@ func main() {
 				if flag == 1 {
 					registration(update, bot, &i, msg, db, &flag)
 				} else if flag == 2 {
-
+					creation(update, bot, &flag1, msg, db, &flag)
 					//if createFlag == 0 {
 					//	createFlag++
 					//} else if createFlag == 1 {
@@ -74,7 +76,9 @@ func main() {
 				panic(err)
 			}
 			if update.CallbackQuery.Data == "create_event" {
-				msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Создание ивента")
+				msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Создание ивента\nХотите создать ивент?")
+				msg.ReplyMarkup = YesOrNo
+				flag1 = 0
 				flag = 2
 			} else if update.CallbackQuery.Data == "see_all_events" {
 				msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Просмотр ивентов")
