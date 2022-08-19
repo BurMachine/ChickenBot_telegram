@@ -90,7 +90,6 @@ func checkUserNameExist(login string, db *sql.DB) (bool, error) {
 	return true if user exist
 */
 func checkUserChatExist(chatID int64, db *sql.DB) (bool, error) {
-	//Counting number of users
 	var count int64
 	row := db.QueryRow("SELECT COUNT(DISTINCT username) FROM users WHERE chatid = $1;", chatID)
 	err := row.Scan(&count)
@@ -156,6 +155,19 @@ func checkEventExist(uniqueCode string, db *sql.DB) (bool, error) {
 		return false, err
 	}
 	if count > 0 {
+		return true, nil
+	}
+	return false, nil
+}
+
+func isUserAdmin(chatID int64, db *sql.DB) (bool, error) {
+	var role int
+	row := db.QueryRow("SELECT role FROM users WHERE chatid = $1;", chatID)
+	err := row.Scan(&role)
+	if err != nil {
+		return false, err
+	}
+	if role == 1 {
 		return true, nil
 	}
 	return false, nil
