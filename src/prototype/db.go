@@ -147,3 +147,16 @@ func addCheckin(chatID int64, event *events, db *sql.DB) error {
 	}
 	return nil
 }
+
+func checkEventExist(uniqueCode string, db *sql.DB) (bool, error) {
+	var count int64
+	row := db.QueryRow("SELECT COUNT(DISTINCT uniqueCode) FROM events WHERE uniqueCode = $1;", uniqueCode)
+	err := row.Scan(&count)
+	if err != nil {
+		return false, err
+	}
+	if count > 0 {
+		return true, nil
+	}
+	return false, nil
+}
