@@ -45,3 +45,12 @@ func creation(update tgbotapi.Update, bot *tgbotapi.BotAPI, flag1 *int, msg tgbo
 		}
 	}
 }
+
+func botCreation(cr *events, update tgbotapi.Update, bot *tgbotapi.BotAPI, msg tgbotapi.MessageConfig, flag1 *int, db *sql.DB) {
+	if cr.state == 0 {
+		cr.name = update.Message.Text
+		// без проверок пока
+
+	}
+
+}
