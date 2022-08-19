@@ -13,7 +13,7 @@ func main() {
 		log.Panic(err)
 	}
 	db := openDatabase()
-	//bot.Debug = true
+	bot.Debug = true
 	//db, err := sql.Open("postgres", dbInfo)
 
 	log.Printf("Authorized on account %s", bot.Self.UserName)
@@ -24,6 +24,7 @@ func main() {
 	updates := bot.GetUpdatesChan(u)
 	flag := 0
 	flag1 := 1
+	//check_in := 0
 	m = make(map[int64]int)
 	signMap = make(map[int64]*user)
 	createMap = make(map[int64]*events)
@@ -37,7 +38,8 @@ func main() {
 			if update.Message.IsCommand() {
 				cmdText := update.Message.Command()
 				// check
-				if cmdText == "menu" {
+				if cmdText == "start " {
+
 				} else if cmdText == "start" {
 					log.Println(update.Message.Text, update.Message.Chat.UserName)
 					flag = 0
@@ -103,6 +105,31 @@ func main() {
 						bot.Send(msg)
 						flag = 0
 					}
+				} else if flag == 5 {
+					// Чекин
+					if a, err := checkUserCheckin(update.Message.Chat.ID, db); a && err == nil {
+						// пишем что он уж внесен в базу
+						msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Уже заСHECKINен")
+					} else {
+						if a, _ := checkUserChatExist(update.Message.Chat.ID, db); a {
+							// добавлем его в базу
+							if a, err := checkEventExist(update.Message.Text, db); a && err != nil {
+								err = addCheckin(update.Message.Chat.ID, update.Message.Text, db)
+								if err != nil {
+									log.Print(err, 123123123)
+									msg = tgbotapi.NewMessage(update.Message.Chat.ID, "СHECKIN failed")
+								} else {
+									msg = tgbotapi.NewMessage(update.Message.Chat.ID, "СHECKIN прошел успешно!!!!!!!!!!!!!!!!!!!!!!!")
+								}
+							}
+							bot.Send(msg)
+						} else {
+							msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Сначала зарегистрируйтесь, потом вернитесь по ссылке")
+							msg.ReplyMarkup = StartMenuKeyboard
+							bot.Send(msg)
+							flag = 1
+						}
+					}
 				} else {
 					msg = tgbotapi.NewMessage(update.Message.Chat.ID, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
 					bot.Send(msg)
@@ -130,7 +157,8 @@ func main() {
 				msg.ReplyMarkup = YesOrNo
 				flag = 3
 			} else if update.CallbackQuery.Data == "Chiken-box_user" {
-				msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "СРШСЛУТ ГЫУК")
+				msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "СHECK USER")
+				msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Введите код ивента")
 				flag = 5
 			}
 			bot.Send(msg)
