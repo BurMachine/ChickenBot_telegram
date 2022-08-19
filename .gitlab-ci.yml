@@ -4,6 +4,7 @@ stages:
   - test
   - build
 before_script:
+  - cd src/prototype
   - go get github.com/go-telegram-bot-api/telegram-bot-api
   - go get github.com/Syfaro/telegram-bot-api
   - go get github.com/lib/pq
@@ -13,7 +14,6 @@ format:
   tags:
     - linux
   script:
-    - cd src
     - go fmt *.go
     - go vet *.go
     - go test -race *.go
