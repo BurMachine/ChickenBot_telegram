@@ -41,12 +41,12 @@ type user struct {
 
 type events struct {
 	state       int
-	name        string
 	eType       string
+	name        string
 	description string
 	uniqueCode  string
-	startTime   string //проверить типб в БД timestamp
-	expiresTime string //проверить типб в БД timestamp
+	startTime   string //проверить тип в БД timestamp
+	expiresTime string //проверить тип в БД timestamp
 }
 
 var signMap map[int64]*user
