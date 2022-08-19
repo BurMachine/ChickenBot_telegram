@@ -25,7 +25,6 @@ compile:
     - linux
 
   script:
-    - cd prototype
     - go build -o tg_bot .
   artifacts:
     paths:
