@@ -32,12 +32,16 @@ func openDatabase() *sql.DB {
 		log.Panic(err)
 	}
 
-	//Creating users Table
+	//Creating DB Tables
 	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS users(ID SERIAL PRIMARY KEY, chatID BIGINT, LOGIN TEXT, USERNAME TEXT, ROLE INT, CAMPUS TEXT);`)
 	if err != nil {
 		log.Panic(err)
 	}
 	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS events(ID SERIAL PRIMARY KEY, eType TEXT, name TEXT, description TEXT, uniqueCode TEXT, startTime TEXT, expiriesTime TEXT);`)
+	if err != nil {
+		log.Panic(err)
+	}
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS checkins(ID SERIAL PRIMARY KEY, login TEXT, uniqueCode TEXT);`)
 	if err != nil {
 		log.Panic(err)
 	}
@@ -107,4 +111,39 @@ func lastEventId(db *sql.DB) (int, error) {
 		return 0, err
 	}
 	return count, nil
+}
+
+func checkUserCheckin(chatID int64, db *sql.DB) (bool, error) {
+	var login string
+	var count int64
+	row := db.QueryRow("SELECT login FROM users WHERE chatid = $1;", chatID)
+	err := row.Scan(&login)
+	if err != nil {
+		return false, err
+	}
+	row = db.QueryRow("SELECT COUNT(DISTINCT login) FROM checkins WHERE login = $1;", login)
+	err = row.Scan(&count)
+	if err != nil {
+		return false, err
+	}
+	if count > 0 {
+		return true, nil
+	}
+	return false, nil
+}
+
+// Add user checkin in DB
+func addCheckin(chatID int64, event *events, db *sql.DB) error {
+	var login string
+	row := db.QueryRow("SELECT login FROM users WHERE chatid = $1;", chatID)
+	err := row.Scan(&login)
+	if err != nil {
+		return err
+	}
+	if _, err := db.Exec("INSERT INTO checkins (login, uniqueCode) values($1, $2);",
+		login,
+		event.uniqueCode); err != nil {
+		return err
+	}
+	return nil
 }
