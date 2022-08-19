@@ -133,7 +133,7 @@ func checkUserCheckin(chatID int64, uniqueCode string, db *sql.DB) (bool, error)
 }
 
 // Add user checkin in DB
-func addCheckin(chatID int64, event *events, db *sql.DB) error {
+func addCheckin(chatID int64, uniqueCode string, db *sql.DB) error {
 	var login string
 	row := db.QueryRow("SELECT login FROM users WHERE chatid = $1;", chatID)
 	err := row.Scan(&login)
