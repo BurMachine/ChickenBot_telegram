@@ -2,10 +2,12 @@ package main
 
 import (
 	"database/sql"
+	"encoding/csv"
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	_ "github.com/lib/pq"
 	"log"
+	"os"
 )
 
 //var host = os.Getenv("HOST")
@@ -17,12 +19,12 @@ import (
 
 var host = "localhost"
 var port = "5432"
-var user_db = "postgres"
+var userDb = "postgres"
 var password = "test"
 var dbname = "postgres"
 var sslmode = "disable"
 
-var dbInfo = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s", host, port, user_db, password, dbname, sslmode)
+var dbInfo = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s", host, port, userDb, password, dbname, sslmode)
 
 //Creating users table in database
 func openDatabase() *sql.DB {
@@ -186,6 +188,37 @@ func outputAllEvents(db *sql.DB, update tgbotapi.Update, bot *tgbotapi.BotAPI) e
 			log.Fatal(err)
 		}
 		msgString := fmt.Sprintf("Название события: %s \nТип: %s\nОписание %s\n Начало: %s\nОкончание: %s", name, eType, description, startTime, expiriesTime)
+		msg := tgbotapi.NewMessage(update.Message.Chat.ID, msgString)
+		bot.Send(msg)
+
+	}
+	return nil
+}
+
+func outputAllCheckins(db *sql.DB, update tgbotapi.Update, bot *tgbotapi.BotAPI) error {
+	rows, err := db.Query("SELECT login, uniqueCode FROM checkins;")
+	if err != nil {
+		return err
+	}
+	f, err := os.Create("checkins.csv")
+	defer f.Close()
+	if err != nil {
+		log.Fatalln("failed to open file", err)
+	}
+	w := csv.NewWriter(f)
+	defer w.Flush()
+
+	for rows.Next() {
+		var login, uniqueCode string
+		if err := rows.Scan(&login, &uniqueCode); err != nil {
+			log.Fatal(err)
+		}
+			if err := w.Write(record); err != nil {
+				log.Fatalln("error writing record to file", err)
+			}
+		}
+	}
+		msgString := fmt.Sprintf("Логин: %s \nСобытие: %s", login, uniqueCode)
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, msgString)
 		bot.Send(msg)
 
