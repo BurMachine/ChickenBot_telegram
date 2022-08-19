@@ -55,7 +55,7 @@ func addUser(us *user, db *sql.DB) error {
 
 // Add new event in DB
 func addEvent(event *events, db *sql.DB) error {
-	if _, err := db.Exec("INSERT INTO event(type, name, description, uniqueCode, startTime, expiriesTime) values('$1','$2','$3','$4','$5', '$6');",
+	if _, err := db.Exec("INSERT INTO event(type, name, description, uniqueCode, startTime, expiriesTime) values($1, $2, $3, $4, $5, $6);",
 		event.eType,
 		event.name,
 		event.description,
@@ -71,7 +71,7 @@ func addEvent(event *events, db *sql.DB) error {
 func checkUserNameExist(login string, db *sql.DB) (bool, error) {
 	//Counting number of users
 	var count int
-	row := db.QueryRow("SELECT COUNT(DISTINCT username) FROM users WHERE username = '$1';", login)
+	row := db.QueryRow("SELECT COUNT(DISTINCT username) FROM users WHERE username = $1;", login)
 	err := row.Scan(&count)
 	if err != nil {
 		return false, err
