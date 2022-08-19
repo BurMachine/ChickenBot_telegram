@@ -153,6 +153,7 @@ func main() {
 				msg.ReplyMarkup = YesOrNo
 				flag = 3
 			} else if update.CallbackQuery.Data == "Chiken-box" {
+				outputAllCheckins(db, update, bot)
 				msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Чикен Чикен🐣")
 				flag = 4
 			} else if update.CallbackQuery.Data == "see_all_events_user" {

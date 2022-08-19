@@ -29,7 +29,7 @@ func botReg(us *user, update tgbotapi.Update, bot *tgbotapi.BotAPI, msg tgbotapi
 			msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Некорректный логин, используйте только латиницу")
 			bot.Send(msg)
 		} else {
-			msg = tgbotapi.NewMessage(update.Message.Chat.ID, "С какого вы кампуса?")
+			msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Из какого вы кампуса?")
 			msg.ReplyMarkup = CampusMenuKeyboard
 			bot.Send(msg)
 			us.state = 2
@@ -60,7 +60,7 @@ func botCreation(cr *events, update tgbotapi.Update, bot *tgbotapi.BotAPI, msg t
 		cr.name = update.Message.Text
 		// без проверок пока
 		a, _ := lastEventId(db)
-		msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Введите description ивента......")
+		msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Введите описание ивента......")
 		cr.uniqueCode = strconv.Itoa(a + 1)
 		bot.Send(msg)
 		cr.state = 1

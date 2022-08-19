@@ -6,6 +6,7 @@ import (
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	_ "github.com/lib/pq"
+	"io/ioutil"
 	"log"
 	"os"
 )
@@ -207,21 +208,33 @@ func outputAllCheckins(db *sql.DB, update tgbotapi.Update, bot *tgbotapi.BotAPI)
 	}
 	w := csv.NewWriter(f)
 	defer w.Flush()
-
+	firstRow := []string{"Логин", "Событие"}
+	if err := w.Write(firstRow); err != nil {
+		log.Fatalln("error writing record to file", err)
+	}
 	for rows.Next() {
-		var login, uniqueCode string
-		if err := rows.Scan(&login, &uniqueCode); err != nil {
+		var nextRow []string
+		var login, uid string
+		if err := rows.Scan(&login, &uid); err != nil {
 			log.Fatal(err)
 		}
-			if err := w.Write(record); err != nil {
-				log.Fatalln("error writing record to file", err)
-			}
+		nextRow = append(nextRow, login, uid)
+		if err := w.Write(nextRow); err != nil {
+			log.Fatalln("error writing record to file", err)
 		}
 	}
-		msgString := fmt.Sprintf("Логин: %s \nСобытие: %s", login, uniqueCode)
-		msg := tgbotapi.NewMessage(update.Message.Chat.ID, msgString)
-		bot.Send(msg)
-
+	w.Flush()
+	f.Close()
+	data, _ := ioutil.ReadFile("checkins.csv")
+	b := tgbotapi.FileBytes{Name: "checkins.csv", Bytes: data}
+	msg := tgbotapi.NewDocument(update.Message.Chat.ID, b)
+	msg.Caption = "Файл с чекинами (CSV)"
+	if z, _ := isUserAdmin(update.Message.Chat.ID, db); z {
+		msg.ReplyMarkup = inKeyboard
+	} else {
+		msg.ReplyMarkup = inKeyboard_user
 	}
+	bot.Send(msg)
+
 	return nil
 }
