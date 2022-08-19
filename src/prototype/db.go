@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	_ "github.com/lib/pq"
@@ -171,4 +172,20 @@ func isUserAdmin(chatID int64, db *sql.DB) (bool, error) {
 		return true, nil
 	}
 	return false, nil
+}
+
+func outputAllEvents(db *sql.DB) error {
+	var ctx context.Context
+	rows, err := db.QueryContext(ctx, "SELECT eType, name, description, startTime, expiriesTime FROM events;")
+	if err != nil {
+		return err
+	}
+	for rows.Next() {
+		var eType, name, description, startTime, expiriesTime string
+		if err := rows.Scan(&eType, &name, &description, &startTime, &expiriesTime); err != nil {
+			log.Fatal(err)
+		}
+		fmt.Printf("Название события: %s \nТип: %s\nОписание %s\n Начало: %s\nОкончание: %s", name, eType, description, startTime, expiriesTime)
+	}
+	return nil
 }
