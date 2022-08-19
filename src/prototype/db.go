@@ -55,7 +55,7 @@ func addUser(us *user, db *sql.DB) error {
 
 // Add new event in DB
 func addEvent(event *events, db *sql.DB) error {
-	if _, err := db.Exec("INSERT INTO events (type, name, description, uniqueCode, startTime, expiriesTime) values($1, $2, $3, $4, $5, $6);",
+	if _, err := db.Exec("INSERT INTO events (etype, name, description, uniqueCode, startTime, expiriesTime) values($1, $2, $3, $4, $5, $6);",
 		event.eType,
 		event.name,
 		event.description,
