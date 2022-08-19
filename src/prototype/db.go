@@ -184,7 +184,10 @@ func outputAllEvents(db *sql.DB, update tgbotapi.Update, bot *tgbotapi.BotAPI) e
 		if err := rows.Scan(&eType, &name, &description, &startTime, &expiriesTime); err != nil {
 			log.Fatal(err)
 		}
-		fmt.Printf("Название события: %s \nТип: %s\nОписание %s\n Начало: %s\nОкончание: %s", name, eType, description, startTime, expiriesTime)
+		msgString := fmt.Sprintf("Название события: %s \nТип: %s\nОписание %s\n Начало: %s\nОкончание: %s", name, eType, description, startTime, expiriesTime)
+		msg = tgbotapi.NewMessage(update.Message.Chat.ID, msgString)
+		bot.Send(msg)
+
 	}
 	return nil
 }
