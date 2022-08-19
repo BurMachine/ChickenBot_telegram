@@ -113,7 +113,7 @@ func lastEventId(db *sql.DB) (int, error) {
 	return count, nil
 }
 
-func checkUserCheckin(chatID int64, db *sql.DB) (bool, error) {
+func checkUserCheckin(chatID int64, uniqueCode string, db *sql.DB) (bool, error) {
 	var login string
 	var count int64
 	row := db.QueryRow("SELECT login FROM users WHERE chatid = $1;", chatID)
@@ -121,7 +121,7 @@ func checkUserCheckin(chatID int64, db *sql.DB) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	row = db.QueryRow("SELECT COUNT(DISTINCT login) FROM checkins WHERE login = $1;", login)
+	row = db.QueryRow("SELECT COUNT(DISTINCT login) FROM checkins WHERE login = $1 AND uniqueCode = $2;", login, uniqueCode)
 	err = row.Scan(&count)
 	if err != nil {
 		return false, err
