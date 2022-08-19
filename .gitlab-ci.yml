@@ -3,6 +3,7 @@ image: golang:latest
 stages:
   - test
   - build
+  - deploy_stage
 before_script:
   - cd src/prototype
   - go get github.com/go-telegram-bot-api/telegram-bot-api
@@ -30,7 +31,7 @@ compile:
     paths:
       - src/prototype/tg_bot
     expire_in: 1 day
-    
+
 deploy_stage:
   image: kroniak/ssh-client
   stage: deploy
