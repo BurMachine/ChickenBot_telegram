@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"log"
+	"strconv"
 )
 
 func registration(update tgbotapi.Update, bot *tgbotapi.BotAPI, i *int, msg tgbotapi.MessageConfig, db *sql.DB, flag *int) {
@@ -51,8 +52,9 @@ func botCreation(cr *events, update tgbotapi.Update, bot *tgbotapi.BotAPI, msg t
 	if cr.state == 0 {
 		cr.name = update.Message.Text
 		// без проверок пока
+		a, _ := lastEventId(db)
 		msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Введите description ивента......")
-		cr.uniqueCode = "777"
+		cr.uniqueCode = strconv.Itoa(a + 1)
 		bot.Send(msg)
 		cr.state = 1
 	} else if cr.state == 1 {
@@ -67,18 +69,19 @@ func botCreation(cr *events, update tgbotapi.Update, bot *tgbotapi.BotAPI, msg t
 		cr.state = 3
 	} else if cr.state == 3 {
 		cr.expiresTime = update.Message.Text
-		msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Введите формат (онлайн/оффлайн)....")
+		msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Введите формат онлайн или город....")
 		bot.Send(msg)
 		cr.state = 4
 	} else if cr.state == 4 {
-		cr.expiresTime = update.Message.Text
+		cr.eType = update.Message.Text
 		msg = tgbotapi.NewMessage(update.Message.Chat.ID, "OK")
 		bot.Send(msg)
 		cr.state = 4
 		*flag = 0
 		addEvent(cr, db)
 		delete(createMap, update.Message.From.ID)
-		log.Println(update.Message.From.UserName, "Должно было закончится заполг=нение бд")
+		log.Println(update.Message.From.UserName, "Должно было закончится заполг=нение бд", cr.uniqueCode)
+		// выдать сообщение - ссылка для регистрации на ивент
 	}
 
 }

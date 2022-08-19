@@ -39,6 +39,8 @@ func main() {
 				// check
 				if cmdText == "menu" {
 				} else if cmdText == "start" {
+					flag = 0
+					flag1 = 1
 					if a, _ := checkUserChatExist(update.Message.Chat.ID, db); !a {
 						flag = 1
 						msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Main menu")
@@ -57,7 +59,17 @@ func main() {
 				if flag == 1 {
 					registration(update, bot, &i, msg, db, &flag)
 				} else if flag == 2 {
-					creation(update, bot, &flag1, msg, db, &flag)
+					if update.Message.Text == "Да" {
+						creation(update, bot, &flag1, msg, db, &flag)
+					} else {
+						msg = tgbotapi.NewMessage(update.Message.Chat.ID, "нет ок")
+						msg.ReplyMarkup = tgbotapi.NewRemoveKeyboard(true)
+						bot.Send(msg)
+						msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Выберете другую функцию из предложенных")
+						msg.ReplyMarkup = inKeyboard
+						bot.Send(msg)
+						flag = 0
+					}
 					//if createFlag == 0 {
 					//	createFlag++
 					//} else if createFlag == 1 {

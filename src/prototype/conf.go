@@ -90,3 +90,12 @@ var inKeyboard = tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardButtonData(ArrEmojiText[12]+"Чикен"+ArrEmojiText[12], "Chiken-box"),
 	),
 )
+
+var inKeyboard_user = tgbotapi.NewInlineKeyboardMarkup(
+	tgbotapi.NewInlineKeyboardRow(
+		tgbotapi.NewInlineKeyboardButtonData(ArrEmojiText[8]+"Просмотр всех ивентов"+ArrEmojiText[8], "see_all_events_user"),
+	),
+	tgbotapi.NewInlineKeyboardRow(
+		tgbotapi.NewInlineKeyboardButtonData(ArrEmojiText[12]+"Чикен"+ArrEmojiText[12], "Chiken-box_user"),
+	),
+)
