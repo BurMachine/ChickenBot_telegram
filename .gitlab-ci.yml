@@ -4,6 +4,7 @@ stages:
   - test
   - build
 before_script:
+  - cd src/prototype
   - go get github.com/go-telegram-bot-api/telegram-bot-api
   - go get github.com/Syfaro/telegram-bot-api
   - go get github.com/lib/pq
@@ -13,10 +14,10 @@ format:
   tags:
     - linux
   script:
-    - cd src
-    - go fmt *.go
-    - go vet *.go
-    - go test -race *.go
+    - go fmt $(go list ./... | grep -v /vendor/)
+    - go vet $(go list ./... | grep -v /vendor/)
+    - go test -race $(go list ./... | grep -v /vendor/)
+
 
 compile:
   stage: build
@@ -24,9 +25,8 @@ compile:
     - linux
 
   script:
-    - cd prototype
     - go build -o tg_bot .
   artifacts:
     paths:
-      - tg_bot
+      - src/prototype/tg_bot
     expire_in: 1 day
