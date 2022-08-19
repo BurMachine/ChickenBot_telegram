@@ -28,5 +28,5 @@ compile:
     - go build -o tg_bot .
   artifacts:
     paths:
-      - tg_bot
+      - src/prototype/tg_bot
     expire_in: 1 day
