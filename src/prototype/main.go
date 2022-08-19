@@ -39,6 +39,7 @@ func main() {
 				// check
 				if cmdText == "menu" {
 				} else if cmdText == "start" {
+					log.Println(update.Message.Text, update.Message.Chat.UserName)
 					flag = 0
 					flag1 = 1
 					if a, _ := checkUserChatExist(update.Message.Chat.ID, db); !a {
@@ -46,10 +47,17 @@ func main() {
 						msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Main menu")
 						msg.ReplyMarkup = StartMenuKeyboard
 					} else {
-						msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Вы зареганы")
-						msg.ReplyMarkup = tgbotapi.NewRemoveKeyboard(true)
-						//bot.Send(msg)
-						msg.ReplyMarkup = inKeyboard
+						if a, _ := isUserAdmin(update.Message.Chat.ID, db); a {
+							msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Вы зареганы как админ")
+							msg.ReplyMarkup = tgbotapi.NewRemoveKeyboard(true)
+							//bot.Send(msg)
+							msg.ReplyMarkup = inKeyboard
+						} else {
+							msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Вы зареганы как юзер")
+							msg.ReplyMarkup = tgbotapi.NewRemoveKeyboard(true)
+							//bot.Send(msg)
+							msg.ReplyMarkup = inKeyboard_user
+						}
 					}
 					bot.Send(msg)
 				} else if cmdText == "create_event_command-for-tgcommand-line" {
@@ -59,10 +67,10 @@ func main() {
 				if flag == 1 {
 					registration(update, bot, &i, msg, db, &flag)
 				} else if flag == 2 {
-					if update.Message.Text == "Да" {
+					if update.Message.Text == "Да" || flag1 == 3 {
 						creation(update, bot, &flag1, msg, db, &flag)
 					} else {
-						msg = tgbotapi.NewMessage(update.Message.Chat.ID, "нет ок")
+						msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Принято!")
 						msg.ReplyMarkup = tgbotapi.NewRemoveKeyboard(true)
 						bot.Send(msg)
 						msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Выберете другую функцию из предложенных")
@@ -77,6 +85,24 @@ func main() {
 					//} else if createFlag == 2 {
 					//	createFlag++
 					//}
+				} else if flag == 3 {
+					msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Принято!!")
+					msg.ReplyMarkup = tgbotapi.NewRemoveKeyboard(true)
+					bot.Send(msg)
+					if update.Message.Text == "Да" {
+						msg = tgbotapi.NewMessage(update.Message.Chat.ID, "печать списка ивентов из базы")
+						outputAllEvents(db, update, bot)
+						bot.Send(msg)
+					} else {
+						msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Выберете другую функцию из предложенных")
+						if a, _ := isUserAdmin(update.Message.Chat.ID, db); a {
+							msg.ReplyMarkup = inKeyboard
+						} else {
+							msg.ReplyMarkup = inKeyboard_user
+						}
+						bot.Send(msg)
+						flag = 0
+					}
 				} else {
 					msg = tgbotapi.NewMessage(update.Message.Chat.ID, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
 					bot.Send(msg)
@@ -93,11 +119,19 @@ func main() {
 				flag1 = 0
 				flag = 2
 			} else if update.CallbackQuery.Data == "see_all_events" {
-				msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Просмотр ивентов")
+				msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Вывести список всех зарегестрированных ивентов?(адм)")
+				msg.ReplyMarkup = YesOrNo
 				flag = 3
 			} else if update.CallbackQuery.Data == "Chiken-box" {
 				msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "Чикен Чикен🐣")
 				flag = 4
+			} else if update.CallbackQuery.Data == "see_all_events_user" {
+				msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "СМОТРЕТЬ ВСЕ ИВЕНТВ ОТ ЛИЦА ЮЗЕРА")
+				msg.ReplyMarkup = YesOrNo
+				flag = 3
+			} else if update.CallbackQuery.Data == "Chiken-box_user" {
+				msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "СРШСЛУТ ГЫУК")
+				flag = 5
 			}
 			bot.Send(msg)
 		}

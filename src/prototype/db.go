@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	_ "github.com/lib/pq"
 	"log"
 )
@@ -173,7 +174,7 @@ func isUserAdmin(chatID int64, db *sql.DB) (bool, error) {
 	return false, nil
 }
 
-func outputAllEvents(db *sql.DB) error {
+func outputAllEvents(db *sql.DB, update tgbotapi.Update, bot *tgbotapi.BotAPI) error {
 	rows, err := db.Query("SELECT eType, name, description, startTime, expiriesTime FROM events;")
 	if err != nil {
 		return err

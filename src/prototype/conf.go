@@ -87,7 +87,7 @@ var inKeyboard = tgbotapi.NewInlineKeyboardMarkup(
 		tgbotapi.NewInlineKeyboardButtonData(ArrEmojiText[8]+"Просмотр всех ивентов"+ArrEmojiText[8], "see_all_events"),
 	),
 	tgbotapi.NewInlineKeyboardRow(
-		tgbotapi.NewInlineKeyboardButtonData(ArrEmojiText[12]+"Чикен"+ArrEmojiText[12], "Chiken-box"),
+		tgbotapi.NewInlineKeyboardButtonData(ArrEmojiText[12]+"Список секинов"+ArrEmojiText[12], "Chiken-box"),
 	),
 )
 
