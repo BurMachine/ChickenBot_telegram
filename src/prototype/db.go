@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"database/sql"
 	"fmt"
 	_ "github.com/lib/pq"
@@ -175,8 +174,7 @@ func isUserAdmin(chatID int64, db *sql.DB) (bool, error) {
 }
 
 func outputAllEvents(db *sql.DB) error {
-	var ctx context.Context
-	rows, err := db.QueryContext(ctx, "SELECT eType, name, description, startTime, expiriesTime FROM events;")
+	rows, err := db.Query("SELECT eType, name, description, startTime, expiriesTime FROM events;")
 	if err != nil {
 		return err
 	}
