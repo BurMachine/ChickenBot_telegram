@@ -142,7 +142,7 @@ func addCheckin(chatID int64, uniqueCode string, db *sql.DB) error {
 	}
 	if _, err := db.Exec("INSERT INTO checkins (login, uniqueCode) values($1, $2);",
 		login,
-		event.uniqueCode); err != nil {
+		uniqueCode); err != nil {
 		return err
 	}
 	return nil
@@ -153,6 +153,7 @@ func checkEventExist(uniqueCode string, db *sql.DB) (bool, error) {
 	row := db.QueryRow("SELECT COUNT(DISTINCT uniqueCode) FROM events WHERE uniqueCode = $1;", uniqueCode)
 	err := row.Scan(&count)
 	if err != nil {
+		log.Println(err)
 		return false, err
 	}
 	if count > 0 {
@@ -185,7 +186,7 @@ func outputAllEvents(db *sql.DB, update tgbotapi.Update, bot *tgbotapi.BotAPI) e
 			log.Fatal(err)
 		}
 		msgString := fmt.Sprintf("Название события: %s \nТип: %s\nОписание %s\n Начало: %s\nОкончание: %s", name, eType, description, startTime, expiriesTime)
-		msg = tgbotapi.NewMessage(update.Message.Chat.ID, msgString)
+		msg := tgbotapi.NewMessage(update.Message.Chat.ID, msgString)
 		bot.Send(msg)
 
 	}

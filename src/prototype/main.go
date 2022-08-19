@@ -13,7 +13,7 @@ func main() {
 		log.Panic(err)
 	}
 	db := openDatabase()
-	bot.Debug = true
+	//bot.Debug = true
 	//db, err := sql.Open("postgres", dbInfo)
 
 	log.Printf("Authorized on account %s", bot.Self.UserName)
@@ -107,13 +107,14 @@ func main() {
 					}
 				} else if flag == 5 {
 					// Чекин
-					if a, err := checkUserCheckin(update.Message.Chat.ID, db); a && err == nil {
+					if a, err := checkUserCheckin(update.Message.Chat.ID, update.Message.Text, db); a && err == nil {
 						// пишем что он уж внесен в базу
 						msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Уже заСHECKINен")
+						bot.Send(msg)
 					} else {
 						if a, _ := checkUserChatExist(update.Message.Chat.ID, db); a {
 							// добавлем его в базу
-							if a, err := checkEventExist(update.Message.Text, db); a && err != nil {
+							if a, err := checkEventExist(update.Message.Text, db); a && err == nil { // отсюда
 								err = addCheckin(update.Message.Chat.ID, update.Message.Text, db)
 								if err != nil {
 									log.Print(err, 123123123)
@@ -121,6 +122,8 @@ func main() {
 								} else {
 									msg = tgbotapi.NewMessage(update.Message.Chat.ID, "СHECKIN прошел успешно!!!!!!!!!!!!!!!!!!!!!!!")
 								}
+							} else { // до сюда
+								msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Ивента с таким кодом не существует")
 							}
 							bot.Send(msg)
 						} else {
@@ -157,8 +160,8 @@ func main() {
 				msg.ReplyMarkup = YesOrNo
 				flag = 3
 			} else if update.CallbackQuery.Data == "Chiken-box_user" {
-				msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "СHECK USER")
-				msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Введите код ивента")
+				msg = tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "СHECK USER\nВведите код ивента")
+				//msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Введите код ивента")
 				flag = 5
 			}
 			bot.Send(msg)
