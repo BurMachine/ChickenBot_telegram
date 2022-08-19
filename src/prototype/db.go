@@ -37,7 +37,7 @@ func openDatabase() *sql.DB {
 	if err != nil {
 		log.Panic(err)
 	}
-	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS events(ID SERIAL PRIMARY KEY, eType TEXT, name TEXT, description TEXT, uniqueCode TEXT, startTime TIMESTAMP, expiriesTime TIMESTAMP);`)
+	_, err = db.Exec(`CREATE TABLE IF NOT EXISTS events(ID SERIAL PRIMARY KEY, eType TEXT, name TEXT, description TEXT, uniqueCode TEXT, startTime TEXT, expiriesTime TEXT);`)
 	if err != nil {
 		log.Panic(err)
 	}
