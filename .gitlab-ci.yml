@@ -3,7 +3,7 @@ image: golang:latest
 stages:
   - test
   - build
-  - deploy_stage
+  - deploy
 before_script:
   - cd src/prototype
   - go get github.com/go-telegram-bot-api/telegram-bot-api
