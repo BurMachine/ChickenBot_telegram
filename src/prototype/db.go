@@ -193,6 +193,13 @@ func outputAllEvents(db *sql.DB, update tgbotapi.Update, bot *tgbotapi.BotAPI) e
 		bot.Send(msg)
 
 	}
+	msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Список всех ивентов")
+	if z, _ := isUserAdmin(update.Message.Chat.ID, db); z {
+		msg.ReplyMarkup = inKeyboard
+	} else {
+		msg.ReplyMarkup = inKeyboard_user
+	}
+	bot.Send(msg)
 	return nil
 }
 
@@ -225,6 +232,9 @@ func outputAllCheckins(db *sql.DB, update tgbotapi.Update, bot *tgbotapi.BotAPI)
 	}
 	w.Flush()
 	f.Close()
+	msg1 := tgbotapi.NewMessage(update.Message.Chat.ID, "Ваш файл со списком")
+	msg1.ReplyMarkup = tgbotapi.NewRemoveKeyboard(true)
+	bot.Send(msg1)
 	data, _ := ioutil.ReadFile("checkins.csv")
 	b := tgbotapi.FileBytes{Name: "checkins.csv", Bytes: data}
 	msg := tgbotapi.NewDocument(update.Message.Chat.ID, b)
@@ -235,6 +245,5 @@ func outputAllCheckins(db *sql.DB, update tgbotapi.Update, bot *tgbotapi.BotAPI)
 		msg.ReplyMarkup = inKeyboard_user
 	}
 	bot.Send(msg)
-
 	return nil
 }

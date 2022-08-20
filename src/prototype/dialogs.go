@@ -13,6 +13,7 @@ func registration(update tgbotapi.Update, bot *tgbotapi.BotAPI, i *int, msg tgbo
 		signMap[update.Message.From.ID].state = 0
 		log.Println(update.Message.From.UserName, update.Message.Text)
 		msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Как вас зовут?")
+		msg.ReplyMarkup = tgbotapi.NewRemoveKeyboard(true)
 		bot.Send(msg)
 	} else {
 		us, ok := signMap[update.Message.From.ID]

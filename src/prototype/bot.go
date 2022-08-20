@@ -83,23 +83,22 @@ func botCreation(cr *events, update tgbotapi.Update, bot *tgbotapi.BotAPI, msg t
 		time_str := strconv.Itoa(time2.Now().Nanosecond())
 		a := Hash() + time_str
 		c := "https://t.me/evcheckinbot?start=" + a
-
 		cr.eType = update.Message.Text
 		msg = tgbotapi.NewMessage(update.Message.Chat.ID, "OK\n"+c)
-		err := qrcode.WriteFile(a, qrcode.Medium, 256, "qr.png")
+		err := qrcode.WriteFile(c, qrcode.Medium, 256, "qr.png")
 		if err != nil {
 			log.Println(err, "перевод в qr")
 		}
 		data, _ := ioutil.ReadFile("qr.png")
 		b := tgbotapi.FileBytes{Name: "qr.png", Bytes: data}
-		msg := tgbotapi.NewPhoto(update.Message.Chat.ID, b)
-		msg.Caption = "QR-код для чекина"
+		msg1 := tgbotapi.NewPhoto(update.Message.Chat.ID, b)
+		msg1.Caption = "QR-код для чекина\n" + c
 		if z, _ := isUserAdmin(update.Message.Chat.ID, db); z {
-			msg.ReplyMarkup = inKeyboard
+			msg1.ReplyMarkup = inKeyboard
 		} else {
-			msg.ReplyMarkup = inKeyboard_user
+			msg1.ReplyMarkup = inKeyboard_user
 		}
-		bot.Send(msg)
+		bot.Send(msg1)
 		cr.state = 4
 		*flag = 0
 		*flag1 = 1
@@ -111,4 +110,33 @@ func botCreation(cr *events, update tgbotapi.Update, bot *tgbotapi.BotAPI, msg t
 		// выдать сообщение - ссылка для регистрации на ивент
 	}
 
+}
+
+func checkin(update tgbotapi.Update, bot *tgbotapi.BotAPI, msg tgbotapi.MessageConfig, flag *int, db *sql.DB, code string) {
+	if a, err := checkUserCheckin(update.Message.Chat.ID, code, db); a && err == nil {
+		// пишем что он уж внесен в базу
+		msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Уже заСHECKINен")
+		bot.Send(msg)
+	} else {
+		if a, _ := checkUserChatExist(update.Message.Chat.ID, db); a {
+			// добавлем его в базу
+			if a, err := checkEventExist(code, db); a && err == nil {
+				err = addCheckin(update.Message.Chat.ID, code, db)
+				if err != nil {
+					log.Print(err, 123123123)
+					msg = tgbotapi.NewMessage(update.Message.Chat.ID, "СHECKIN failed")
+				} else {
+					msg = tgbotapi.NewMessage(update.Message.Chat.ID, "СHECKIN прошел успешно!!!!!!!!!!!!!!!!!!!!!!!")
+				}
+			} else {
+				msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Ивента с таким кодом не существует")
+			}
+			bot.Send(msg)
+		} else {
+			msg = tgbotapi.NewMessage(update.Message.Chat.ID, "Сначала зарегистрируйтесь, потом вернитесь по ссылке")
+			msg.ReplyMarkup = StartMenuKeyboard
+			bot.Send(msg)
+			*flag = 1
+		}
+	}
 }

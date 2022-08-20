@@ -12,6 +12,11 @@ func check_name(name string) bool {
 	return matched
 }
 
+func checkDeepLink(name string) bool {
+	matched, _ := regexp.MatchString(`^^\/start ([a-zA-Z0-9_-]{1,64})$`, name)
+	return matched
+}
+
 func check_login(name string) bool {
 	matched, _ := regexp.MatchString(`^[a-zA-Z]+$`, name)
 	return matched
