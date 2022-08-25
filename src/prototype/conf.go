@@ -3,7 +3,7 @@ package main
 import tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 
 const (
-	TELEGRAM_BOT_API_KEY       = "5775513785:AAGy6Ht6IYgaZUVfLOmyyYiviwtJfJhmKu8" // API  ключ, который мы получили у BotFather
+	TELEGRAM_BOT_API_KEY       = "TOKEN" // API  ключ, который мы получили у BotFather
 	POSTGRESS_CONNECTION_URL   = "localhost"                                      // Адрес сервера PostgressDB
 	POSTGRESS_DATABASE_NAME    = "regbot"                                         // Название базы данных
 	POSTGRESS_COLLECTION_USERS = "users"                                          // Название таблицы
